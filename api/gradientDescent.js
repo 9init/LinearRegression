@@ -4,10 +4,10 @@ where X is the explanatory variable and Y is the dependent variable.
 The slope of the line is a, and a is the intercept (the value of y when x = 0).
 */
 
-let data = []
-let a = 0;
-let b = 0;
-let learningRate = 0.08
+let data = [];
+let b0 = 0;
+let b1 = 0;
+let learningRate = 0.08;
 
 function setup() {
     createCanvas(900, 900);
@@ -20,24 +20,22 @@ function mousePressed(){
     data.push(point);
 }
 
-function calcGradientD(){
-    for(let i=0; i<data.length; i++){
-        let x = data[i].x;
-        let y = data[i].y;
 
-        //Y = a + bX
-        let output = a + (b * x);
-        let error = (y - output)
-        a += error * learningRate;
-        b += error * x * learningRate * 2;
+function calcLinearReg(){
+    for(let i=0; i<data.length; i++){
+        let {x, y} = data[i];
+        let desired = b0 + (b1 * x);
+        let error = y - desired; // the residual is the error
+        b0 += error * learningRate;
+        b1 += error * x * learningRate * 2;
     }
-}
+  }
 
 function drawLine(){
     let x1 = 0;
-    let y1 = a + (b*x1);
+    let y1 = b0 + (b1 * x1);
     let x2 = 1;
-    let y2 = a + (b*x2);
+    let y2 = b0 + (b1 * x2);
 
     x1 = map(x1, 0, 1, 0, width);
     y1 = map(y1, 0, 1, height, 0);
@@ -50,20 +48,26 @@ function drawLine(){
 }
 
 function draw(){
-  background(50);
-
-  for(let i=0; i<data.length; i++){
+    background(50);
+  
+    if(data.length > 1){
+      calcLinearReg();
+      drawLine();
+    }
+  
+    for(let i=0; i<data.length; i++){
       let x = map(data[i].x, 0, 1, 0, width);
       let y = map(data[i].y, 0, 1, height, 0);
-
-      fill(97,15,240);
+      let predict = b0 + b1 * data[i].x;
+      let residual = data[i].y - predict;
+      if (residual > 0){
+        fill(97,15,240);
+      }else{
+        fill(204, 159, 255);
+      }
       stroke(255);
       strokeWeight(2);
-      ellipse(x,y,20,20)
+      ellipse(x, y, 20, 20);
+    }
+  
   }
-
-  if(data.length > 1){
-    calcGradientD();
-    drawLine();
-  }
-}
