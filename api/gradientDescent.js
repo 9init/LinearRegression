@@ -1,5 +1,5 @@
 /*
-A linear regression line has an equation of the form Y = a + bX,
+A linear regression line has an equation of the form Y = b0 + b1X,
 where X is the explanatory variable and Y is the dependent variable.
 The slope of the line is a, and a is the intercept (the value of y when x = 0).
 */
